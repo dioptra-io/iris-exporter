@@ -13,33 +13,33 @@ class Exporter:
         self.storage_credentials = storage_credentials
         self.bucket_name = bucket_name
 
-    def delete(self, measurement_id: str):
-        self.object(measurement_id).delete()
+    def delete(self, measurement_uuid: str, agent_uuid: str):
+        self.object(measurement_uuid, agent_uuid).delete()
 
-    def exists(self, measurement_id: str) -> bool:
+    def exists(self, measurement_uuid: str, agent_uuid: str) -> bool:
         try:
-            self.object(measurement_id).load()
+            self.object(measurement_uuid, agent_uuid).load()
             return True
         except ClientError as e:
             if e.response["Error"]["Code"] != "404":
                 raise
         return False
 
-    def export(self, measurement_id: str):
+    def export(self, measurement_uuid: str, agent_uuid: str):
         raise NotImplementedError
 
-    def object(self, measurement_id: str) -> Object:
+    def object(self, measurement_uuid: str, agent_uuid: str) -> Object:
         bucket = self.storage.Bucket(self.bucket_name)
-        return bucket.Object(self.key(measurement_id))
+        return bucket.Object(self.key(measurement_uuid, agent_uuid))
 
-    def key(self, measurement_id: str) -> str:
+    def key(self, measurement_uuid: str, agent_uuid: str) -> str:
         raise NotImplementedError
 
-    def path(self, measurement_id: str) -> str:
+    def path(self, measurement_uuid: str, agent_uuid: str) -> str:
         return "/".join(
             (
                 self.storage_credentials["endpoint_url"],
                 self.bucket_name,
-                self.key(measurement_id),
+                self.key(measurement_uuid, agent_uuid),
             )
         )

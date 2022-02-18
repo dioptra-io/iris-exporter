@@ -9,6 +9,7 @@ database_credentials = dict(
     username="default",
 )
 
+# TODO: Remove
 database = ClickHouseClient(**database_credentials)
 
 storage_credentials = dict(
@@ -18,4 +19,5 @@ storage_credentials = dict(
     region_name="local",
 )
 
+# TODO: Remove
 storage = boto3.resource("s3", **storage_credentials)

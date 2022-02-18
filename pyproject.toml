@@ -12,7 +12,7 @@ diamond-miner = "^0.8.0"
 dioptra-iris-client = "^0.4.0"
 dramatiq = {extras = ["redis", "watch"], version = "^1.12.2"}
 httpx = "^0.22.0"
-pych-client = {extras = ["orjson"], version = "^0.2.7"}
+pych-client = {extras = ["orjson"], version = "^0.2.8"}
 pydantic = "^1.9.0"
 redis = "^4.1.4"
 zstandard = "^0.17.0"
@@ -24,6 +24,24 @@ pre-commit = "^2.17.0"
 pytest = "^7.0.1"
 pytest-asyncio = "^0.18.1"
 pytest-cov = "^3.0.0"
+types-redis = "^4.1.16"
+
+[tool.pytest.ini_options]
+addopts = "--doctest-modules --log-cli-level=info --strict-markers"
+asyncio_mode = "auto"
+
+[tool.mypy]
+disallow_untyped_calls = true
+disallow_untyped_defs = true
+implicit_reexport = false
+no_implicit_optional = true
+strict_equality = true
+strict_optional = true
+warn_no_return = true
+warn_redundant_casts = true
+warn_return_any = true
+warn_unreachable = true
+warn_unused_ignores = true
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

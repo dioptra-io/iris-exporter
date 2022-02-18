@@ -1,12 +1,13 @@
 from functools import wraps
 from itertools import chain
+from typing import Any
 
 from redis.exceptions import LockError
 
 from iris_exporter.commons.logger import logger
 
 
-def format_args(*args, **kwargs):
+def format_args(*args: Any, **kwargs: Any) -> str:
     """
     >>> format_args(1, 2)
     '1, 2'

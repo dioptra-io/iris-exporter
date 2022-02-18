@@ -1,23 +1,12 @@
 from diamond_miner.queries import results_table
 
-from iris_exporter.commons.database import get_table_structure
+from iris_exporter.commons.database import get_table_structure, measurement_id
 from iris_exporter.exporter.base import Exporter
 
 
 class CSVExporter(Exporter):
-    """
-    >>> from iris_exporter.test import bucket, database_credentials, storage_credentials
-    >>> exporter = CSVExporter(database_credentials, storage_credentials, bucket)
-    >>> exporter.delete("test_nsdi_example")
-    >>> exporter.exists("test_nsdi_example")
-    False
-    >>> exporter.export("test_nsdi_example")
-    >>> exporter.exists("test_nsdi_example")
-    True
-    """
-
-    def export(self, measurement_id: str):
-        table = results_table(measurement_id)
+    def export(self, measurement_uuid: str, agent_uuid: str):
+        table = results_table(measurement_id(measurement_uuid, agent_uuid))
         structure = get_table_structure(self.database, table)
         query = """
         INSERT INTO FUNCTION s3(
@@ -32,11 +21,12 @@ class CSVExporter(Exporter):
         """
         params = dict(
             **self.storage_credentials,
-            path=self.path(measurement_id),
-            table=results_table(measurement_id),
+            path=self.path(measurement_uuid, agent_uuid),
+            table=table,
             structure=structure,
         )
         self.database.execute(query, params)
 
-    def key(self, measurement_id: str) -> str:
-        return f"{measurement_id}__results.csv.zst"
+    def key(self, measurement_uuid: str, agent_uuid: str) -> str:
+        measurement_id_ = measurement_id(measurement_uuid, agent_uuid)
+        return f"{measurement_id_}__results.csv.zst"
