@@ -13,6 +13,7 @@ export IRIS_BASE_URL=http://api.docker.localhost IRIS_USERNAME=admin@example.org
 docker compose --project-name=iris up
 docker compose up -d clickhouse minio redis
 poetry run python -m iris_exporter.watcher
+# TODO: Insert diamond-miner test data.
 ```
 
 ```sql

@@ -1,12 +1,11 @@
 import dramatiq
 import redis
 from dramatiq.brokers.redis import RedisBroker
-from pych import ClickHouseClient
 
 from iris_exporter.commons.exclusive import exclusive
 from iris_exporter.commons.logger import configure_logging
 from iris_exporter.commons.settings import Settings
-from iris_exporter.exporter.exporters import export_results_csv_s3
+from iris_exporter.exporter.exporters import CSVExporter
 
 settings = Settings()
 redis_client = redis.from_url(settings.redis_url)
@@ -26,10 +25,14 @@ def export_results(
     storage_credentials: dict,
     measurement_id: str,
 ):
-    with ClickHouseClient(**database_credentials) as client:
-        # find_results_csv_s3(storage_credentials, measurement_id)
-        # TODO: Cleanup on failure.
-        export_results_csv_s3(client, storage_credentials, measurement_id)
+    exporter = CSVExporter(database_credentials, storage_credentials, "test-bucket")
+    if exporter.exists(measurement_id):
+        return
+    try:
+        exporter.export(measurement_id)
+    except Exception:
+        exporter.delete(measurement_id)
+        raise
 
 
 @dramatiq.actor(max_retries=0)

@@ -8,13 +8,14 @@ license = "MIT"
 [tool.poetry.dependencies]
 python = "^3.10"
 boto3 = "^1.21.0"
-diamond-miner = "^0.7.4"
+diamond-miner = "^0.8.0"
 dioptra-iris-client = "^0.4.0"
-dioptra-pych = {extras = ["orjson"], version = "^0.1.2"}
 dramatiq = {extras = ["redis", "watch"], version = "^1.12.2"}
 httpx = "^0.22.0"
+pych-client = {extras = ["orjson"], version = "^0.2.7"}
 pydantic = "^1.9.0"
 redis = "^4.1.4"
+zstandard = "^0.17.0"
 
 [tool.poetry.dev-dependencies]
 boto3-stubs = {extras = ["s3"], version = "^1.21.0"}
