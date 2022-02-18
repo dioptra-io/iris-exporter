@@ -5,7 +5,7 @@ from dramatiq.brokers.redis import RedisBroker
 from iris_exporter.commons.exclusive import exclusive
 from iris_exporter.commons.logger import configure_logging
 from iris_exporter.commons.settings import Settings
-from iris_exporter.exporter.exporters import CSVExporter
+from iris_exporter.exporter.exporters.csv import CSVExporter
 
 settings = Settings()
 redis_client = redis.from_url(settings.redis_url)
