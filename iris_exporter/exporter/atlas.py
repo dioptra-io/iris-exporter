@@ -6,7 +6,7 @@ from diamond_miner.converters import to_ripe_atlas
 from diamond_miner.queries import GetTraceroutes
 from zstandard import ZstdCompressor
 
-from iris_exporter.exporter.exporters.base import Exporter
+from iris_exporter.exporter.base import Exporter
 
 
 class AtlasExporter(Exporter):

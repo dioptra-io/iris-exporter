@@ -1,6 +1,6 @@
 from diamond_miner.queries import results_table
 
-from iris_exporter.exporter.exporters.base import Exporter
+from iris_exporter.exporter.base import Exporter
 from iris_exporter.exporter.helpers import get_table_structure
 
 
