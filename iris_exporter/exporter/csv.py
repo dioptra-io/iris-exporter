@@ -1,7 +1,7 @@
 from diamond_miner.queries import results_table
 
+from iris_exporter.commons.database import get_table_structure
 from iris_exporter.exporter.base import Exporter
-from iris_exporter.exporter.helpers import get_table_structure
 
 
 class CSVExporter(Exporter):

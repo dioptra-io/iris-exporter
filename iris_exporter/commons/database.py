@@ -1,8 +1,5 @@
 from pych_client import ClickHouseClient
 
-import iris_exporter
-from iris_exporter.test import database
-
 
 def get_table_structure(client: ClickHouseClient, table: str) -> str:
     """
