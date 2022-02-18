@@ -44,17 +44,30 @@ def watch_once():
         measurements = client.all("/measurements/public", params=dict(state="finished"))
         for measurement in measurements:
             for agent in measurement["agents"]:
-                measurement_id = f"{measurement['uuid']}__{agent['agent_uuid']}"
+                measurement_uuid = measurement["uuid"]
+                agent_uuid = agent["agent_uuid"]
                 export_results.send(
-                    database_credentials, storage_credentials, measurement_id
+                    database_credentials,
+                    storage_credentials,
+                    measurement_uuid,
+                    agent_uuid,
                 )
                 export_traceroutes_atlas.send(
-                    database_credentials, storage_credentials, measurement_id
+                    database_credentials,
+                    storage_credentials,
+                    measurement_uuid,
+                    agent_uuid,
                 )
                 export_traceroutes_warts.send(
-                    database_credentials, storage_credentials, measurement_id
+                    database_credentials,
+                    storage_credentials,
+                    measurement_uuid,
+                    agent_uuid,
                 )
                 export_graph.send(
-                    database_credentials, storage_credentials, measurement_id
+                    database_credentials,
+                    storage_credentials,
+                    measurement_uuid,
+                    agent_uuid,
                 )
         logger.info("state=done")

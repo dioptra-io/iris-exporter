@@ -9,6 +9,7 @@ class Exporter:
         self, database_credentials: dict, storage_credentials: dict, bucket_name: str
     ):
         self.database = ClickHouseClient(**database_credentials)
+        self.database_credentials = database_credentials
         self.storage = boto3.resource("s3", **storage_credentials)
         self.storage_credentials = storage_credentials
         self.bucket_name = bucket_name

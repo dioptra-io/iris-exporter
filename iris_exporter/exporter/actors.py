@@ -5,6 +5,7 @@ from dramatiq.brokers.redis import RedisBroker
 from iris_exporter.commons.exclusive import exclusive
 from iris_exporter.commons.logger import configure_logging
 from iris_exporter.commons.settings import Settings
+from iris_exporter.exporter.atlas import AtlasExporter
 from iris_exporter.exporter.csv import CSVExporter
 
 settings = Settings()
@@ -23,15 +24,16 @@ configure_logging()
 def export_results(
     database_credentials: dict,
     storage_credentials: dict,
-    measurement_id: str,
+    measurement_uuid: str,
+    agent_uuid: str,
 ):
     exporter = CSVExporter(database_credentials, storage_credentials, "test-bucket")
-    if exporter.exists(measurement_id):
+    if exporter.exists(measurement_uuid, agent_uuid):
         return
     try:
-        exporter.export(measurement_id)
+        exporter.export(measurement_uuid, agent_uuid)
     except Exception:
-        exporter.delete(measurement_id)
+        exporter.delete(measurement_uuid, agent_uuid)
         raise
 
 
@@ -40,9 +42,17 @@ def export_results(
 def export_traceroutes_atlas(
     database_credentials: dict,
     storage_credentials: dict,
-    measurement_id: str,
+    measurement_uuid: str,
+    agent_uuid: str,
 ):
-    pass
+    exporter = AtlasExporter(database_credentials, storage_credentials, "test-bucket")
+    if exporter.exists(measurement_uuid, agent_uuid):
+        return
+    try:
+        exporter.export(measurement_uuid, agent_uuid)
+    except Exception:
+        exporter.delete(measurement_uuid, agent_uuid)
+        raise
 
 
 @dramatiq.actor(max_retries=0)
@@ -50,7 +60,8 @@ def export_traceroutes_atlas(
 def export_traceroutes_warts(
     database_credentials: dict,
     storage_credentials: dict,
-    measurement_id: str,
+    measurement_uuid: str,
+    agent_uuid: str,
 ):
     pass
 
@@ -60,6 +71,7 @@ def export_traceroutes_warts(
 def export_graph(
     database_credentials: dict,
     storage_credentials: dict,
-    measurement_id: str,
+    measurement_uuid: str,
+    agent_uuid: str,
 ):
     pass

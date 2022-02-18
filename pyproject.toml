@@ -12,6 +12,7 @@ diamond-miner = "^0.8.0"
 dioptra-iris-client = "^0.4.0"
 dramatiq = {extras = ["redis", "watch"], version = "^1.12.2"}
 httpx = "^0.22.0"
+orjson = "^3.6.7"
 pych-client = {extras = ["orjson"], version = "^0.2.8"}
 pydantic = "^1.9.0"
 redis = "^4.1.4"
@@ -27,7 +28,7 @@ pytest-cov = "^3.0.0"
 types-redis = "^4.1.16"
 
 [tool.pytest.ini_options]
-addopts = "--doctest-modules --log-cli-level=info --strict-markers"
+addopts = "--capture=no --doctest-modules --log-cli-level=info --strict-markers"
 asyncio_mode = "auto"
 
 [tool.mypy]
