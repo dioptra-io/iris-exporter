@@ -3,7 +3,8 @@ from pych_client import ClickHouseClient
 
 def get_table_structure(client: ClickHouseClient, table: str) -> str:
     """
-    >>> from iris_exporter.test import database
+    >>> from iris_exporter.test import database_credentials
+    >>> database = ClickHouseClient(**database_credentials)
     >>> get_table_structure(database, "results__test_nsdi_example") # doctest: +ELLIPSIS
     'capture_timestamp DateTime, probe_protocol UInt8, probe_src_addr IPv6, ...'
     """

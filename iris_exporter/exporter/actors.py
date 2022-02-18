@@ -26,7 +26,7 @@ def export_results(
     storage_credentials: dict,
     measurement_uuid: str,
     agent_uuid: str,
-):
+) -> None:
     exporter = CSVExporter(database_credentials, storage_credentials, "test-bucket")
     if exporter.exists(measurement_uuid, agent_uuid):
         return
@@ -44,7 +44,7 @@ def export_traceroutes_atlas(
     storage_credentials: dict,
     measurement_uuid: str,
     agent_uuid: str,
-):
+) -> None:
     exporter = AtlasExporter(database_credentials, storage_credentials, "test-bucket")
     if exporter.exists(measurement_uuid, agent_uuid):
         return
@@ -62,7 +62,7 @@ def export_traceroutes_warts(
     storage_credentials: dict,
     measurement_uuid: str,
     agent_uuid: str,
-):
+) -> None:
     pass
 
 
@@ -73,5 +73,5 @@ def export_graph(
     storage_credentials: dict,
     measurement_uuid: str,
     agent_uuid: str,
-):
+) -> None:
     pass

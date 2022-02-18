@@ -5,7 +5,7 @@ from iris_exporter.exporter.base import Exporter
 
 
 class CSVExporter(Exporter):
-    def export(self, measurement_uuid: str, agent_uuid: str):
+    def export(self, measurement_uuid: str, agent_uuid: str) -> None:
         table = results_table(measurement_id(measurement_uuid, agent_uuid))
         structure = get_table_structure(self.database, table)
         query = """

@@ -9,7 +9,7 @@ license = "MIT"
 python = "^3.10"
 boto3 = "^1.21.0"
 diamond-miner = "^0.8.0"
-dioptra-iris-client = "^0.4.0"
+dioptra-iris-client = "^0.4.1"
 dramatiq = {extras = ["redis", "watch"], version = "^1.12.2"}
 httpx = "^0.22.0"
 orjson = "^3.6.7"
@@ -34,6 +34,7 @@ asyncio_mode = "auto"
 [tool.mypy]
 disallow_untyped_calls = true
 disallow_untyped_defs = true
+ignore_missing_imports = true
 implicit_reexport = false
 no_implicit_optional = true
 strict_equality = true

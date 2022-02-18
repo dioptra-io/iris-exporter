@@ -514,7 +514,7 @@ zstandard = ">=0.15.2,<0.18.0"
 
 [[package]]
 name = "dioptra-iris-client"
-version = "0.4.0"
+version = "0.4.1"
 description = "Python client for the Iris API."
 category = "main"
 optional = false
@@ -1122,7 +1122,7 @@ cffi = ["cffi (>=1.11)"]
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.10"
-content-hash = "bf98b87cf0eb79ccda8d9be90d406efb30b45d5c65f9ecad87aa197777cb369e"
+content-hash = "f4396a7dc2d0f4701dd345732ec1f4fd21973ef731028dd71e2edeccd912cad5"
 
 [metadata.files]
 anyio = [
@@ -1309,8 +1309,8 @@ diamond-miner = [
     {file = "diamond_miner-0.8.0-pp38-pypy38_pp73-manylinux_2_17_x86_64.manylinux_2_5_x86_64.manylinux1_x86_64.manylinux2014_x86_64.whl", hash = "sha256:5a3fc7a91a53934dbed24b9bd35fb94210106dc088f5f26ba234dfc470949343"},
 ]
 dioptra-iris-client = [
-    {file = "dioptra-iris-client-0.4.0.tar.gz", hash = "sha256:8446f1d4d0214ee729f2c5eeab940dcd0c536427afc26fb0d3d8463b9d369cfa"},
-    {file = "dioptra_iris_client-0.4.0-py3-none-any.whl", hash = "sha256:8d27308f4ddae4201c956d1e5507115a343f26d203bf54416cdb4d4ea4441c34"},
+    {file = "dioptra-iris-client-0.4.1.tar.gz", hash = "sha256:242e3b5aef990597af66f31fb5c02749051028f6fa17cdb9c027496870c79e33"},
+    {file = "dioptra_iris_client-0.4.1-py3-none-any.whl", hash = "sha256:9361ac09d81090cd6ed658aaf6e488688fa7d70ff7eced51b8de910f485b61dd"},
 ]
 distlib = [
     {file = "distlib-0.3.4-py2.py3-none-any.whl", hash = "sha256:6564fe0a8f51e734df6333d08b8b94d4ea8ee6b99b5ed50613f731fd4089f34b"},

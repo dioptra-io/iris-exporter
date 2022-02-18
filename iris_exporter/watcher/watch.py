@@ -11,13 +11,13 @@ from iris_exporter.exporter.actors import (
 )
 
 
-def watch(interval: float):
+def watch(interval: float) -> None:
     while True:
         watch_once()
         time.sleep(interval)
 
 
-def watch_once():
+def watch_once() -> None:
     with IrisClient() as client:
         logger.info("state=fetch_measurements")
         services = client.get("/users/me/services").json()

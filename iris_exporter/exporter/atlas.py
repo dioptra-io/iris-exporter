@@ -16,7 +16,7 @@ from iris_exporter.exporter.base import Exporter
 
 
 class AtlasExporter(Exporter):
-    def export(self, measurement_uuid: str, agent_uuid: str):
+    def export(self, measurement_uuid: str, agent_uuid: str) -> None:
         measurement_id_ = measurement_id(measurement_uuid, agent_uuid)
         subsets = subsets_for(GetTraceroutes(), self.database, measurement_id_)
 
@@ -44,7 +44,7 @@ class AtlasExporter(Exporter):
         agent_uuid: str,
         subset: IPNetwork,
         destination: Path,
-    ):
+    ) -> None:
         # NOTE: We cannot pickle httpx client instances, so we pass the credentials
         # instead, and instantiate the database client inside the function.
         database = ClickHouseClient(**database_credentials)
