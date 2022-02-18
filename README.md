@@ -1,8 +1,6 @@
 # iris-exporter
 
-Export Iris data.
-
-TODO: autoflake + mypy; rename v1 to iris-exporter-legacy.
+🚧 Work in progress.
 
 ```bash
 # TODO: Create sample measurement + create bucket
