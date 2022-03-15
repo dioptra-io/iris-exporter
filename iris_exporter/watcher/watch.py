@@ -3,12 +3,15 @@ import time
 from iris_client import IrisClient
 
 from iris_exporter.commons.logger import logger
+from iris_exporter.commons.settings import Settings
 from iris_exporter.exporter.actors import (
     export_graph,
     export_results,
     export_traceroutes_atlas,
     export_traceroutes_warts,
 )
+
+settings = Settings()
 
 
 def watch(interval: float) -> None:
@@ -18,30 +21,31 @@ def watch(interval: float) -> None:
 
 
 def watch_once() -> None:
-    with IrisClient() as client:
+    with IrisClient(
+        base_url=settings.iris_base_url,
+        username=settings.iris_username,
+        password=settings.iris_password,
+    ) as client:
         logger.info("state=fetch_measurements")
-        services = client.get("/users/me/services").json()
         # TODO: Use guesthouse to return proper credentials with write access.
-        database_credentials = dict(
-            base_url=services["chproxy_base_url"],
-            database=services["chproxy_database"],
-            username="default",
-            password=""
-            # username=services["chproxy_username"],
-            # password=services["chproxy_password"],
-        )
         # TODO: ClickHouse doesn't seems to support session token for s3 table function.
-        # => PR?
-        storage_credentials = dict(
-            endpoint_url=services["s3_host"],
-            aws_session_token=None,
-            aws_access_key_id="minioadmin",
-            aws_secret_access_key="minioadmin"
-            # aws_session_token=services["s3_session_token"],
-            # aws_access_key_id=services["s3_access_key_id"],
-            # aws_secret_access_key=services["s3_secret_access_key"],
+        #       => PR?
+        # services = client.get("/users/me/services").json()
+        database_credentials = dict(
+            base_url=settings.clickhouse_base_url,
+            database=settings.clickhouse_database,
+            username=settings.clickhouse_username,
+            password=settings.clickhouse_password,
         )
-        measurements = client.all("/measurements/public", params=dict(state="finished"))
+        storage_credentials = dict(
+            endpoint_url=settings.s3_endpoint_url,
+            aws_access_key_id=settings.s3_access_key_id,
+            aws_secret_access_key=settings.s3_secret_access_key,
+        )
+        measurements = client.all(
+            "/measurements/",
+            params=dict(only_mine=False, state="finished", tag=settings.tag),
+        )
         for measurement in measurements:
             for agent in measurement["agents"]:
                 measurement_uuid = measurement["uuid"]
@@ -49,24 +53,28 @@ def watch_once() -> None:
                 export_results.send(
                     database_credentials,
                     storage_credentials,
+                    settings.s3_bucket,
                     measurement_uuid,
                     agent_uuid,
                 )
                 export_traceroutes_atlas.send(
                     database_credentials,
                     storage_credentials,
+                    settings.s3_bucket,
                     measurement_uuid,
                     agent_uuid,
                 )
                 export_traceroutes_warts.send(
                     database_credentials,
                     storage_credentials,
+                    settings.s3_bucket,
                     measurement_uuid,
                     agent_uuid,
                 )
                 export_graph.send(
                     database_credentials,
                     storage_credentials,
+                    settings.s3_bucket,
                     measurement_uuid,
                     agent_uuid,
                 )

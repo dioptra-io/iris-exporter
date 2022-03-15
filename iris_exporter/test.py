@@ -1,4 +1,4 @@
-bucket = "test-bucket"
+bucket = "iris-exporter"
 
 database_credentials = dict(
     base_url="http://clickhouse.docker.localhost",
