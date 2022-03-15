@@ -101,7 +101,7 @@ def export_traceroutes_warts(
     agent_uuid: str,
 ) -> None:
     logger.info(
-        "actor=export_results measurement_uuid=%s agent_uuid=%s",
+        "actor=export_traceroutes_warts measurement_uuid=%s agent_uuid=%s",
         measurement_uuid,
         agent_uuid,
     )
@@ -117,7 +117,7 @@ def export_graph(
     agent_uuid: str,
 ) -> None:
     logger.info(
-        "actor=export_results measurement_uuid=%s agent_uuid=%s",
+        "actor=export_graph measurement_uuid=%s agent_uuid=%s",
         measurement_uuid,
         agent_uuid,
     )
