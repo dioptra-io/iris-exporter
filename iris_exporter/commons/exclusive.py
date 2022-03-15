@@ -1,4 +1,5 @@
 from functools import wraps
+from hashlib import sha256
 from itertools import chain
 from typing import Any, Callable, ParamSpec, TypeVar
 
@@ -29,11 +30,8 @@ def exclusive(redis_client: Redis, namespace: str) -> Callable:
     def decorator(f: Callable[P, R]) -> Callable[P, R | None]:
         @wraps(f)
         def wrapper(*args: Any, **kwargs: Any) -> R | None:
-            # TODO: Store hash of parameters instead?
-            # TODO: Use format_args instead?
-            lock_key = f"{namespace}:{f.__name__}-{args}-{kwargs}"
-            # args_str = format_args(*args, **kwargs)
-            # func_str = f"{f.__name__}({args_str})"
+            params_hash = sha256(f"{args}-{kwargs}".encode()).hexdigest()
+            lock_key = f"{namespace}:{f.__name__}-{params_hash}"
             try:
                 with redis_client.lock(lock_key, blocking_timeout=0, timeout=86400):
                     logger.info("lock=acquired")
