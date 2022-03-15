@@ -14,7 +14,7 @@ redis_client = redis.from_url(settings.redis_url)
 
 
 @dramatiq.actor(max_retries=0)
-@exclusive(redis_client)
+@exclusive(redis_client, settings.redis_namespace)
 def export_results(
     database_credentials: dict,
     storage_credentials: dict,
@@ -53,7 +53,7 @@ def export_results(
 
 
 @dramatiq.actor(max_retries=0)
-@exclusive(redis_client)
+@exclusive(redis_client, settings.redis_namespace)
 def export_traceroutes_atlas(
     database_credentials: dict,
     storage_credentials: dict,
@@ -92,7 +92,7 @@ def export_traceroutes_atlas(
 
 
 @dramatiq.actor(max_retries=0)
-@exclusive(redis_client)
+@exclusive(redis_client, settings.redis_namespace)
 def export_traceroutes_warts(
     database_credentials: dict,
     storage_credentials: dict,
@@ -108,7 +108,7 @@ def export_traceroutes_warts(
 
 
 @dramatiq.actor(max_retries=0)
-@exclusive(redis_client)
+@exclusive(redis_client, settings.redis_namespace)
 def export_graph(
     database_credentials: dict,
     storage_credentials: dict,
