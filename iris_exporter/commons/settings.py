@@ -17,6 +17,7 @@ class Settings(BaseSettings):
     s3_endpoint_url: str = "http://minio.docker.localhost"
     s3_access_key_id: str = "minioadmin"
     s3_secret_access_key: str = "minioadmin"
+    s3_region_name: str = "local"
     tag: str = "!public"
     watch_interval: int = 5  # seconds
     working_directory: Path = Path()

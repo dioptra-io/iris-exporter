@@ -29,4 +29,4 @@ class CSVExporter(Exporter):
 
     def key(self, measurement_uuid: str, agent_uuid: str) -> str:
         measurement_id_ = measurement_id(measurement_uuid, agent_uuid)
-        return f"{measurement_id_}__results.csv.zst"
+        return f"{measurement_id_}__csv.csv.zst"
