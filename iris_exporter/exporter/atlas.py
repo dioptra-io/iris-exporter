@@ -22,7 +22,7 @@ class AtlasExporter(Exporter):
 
         with TemporaryDirectory() as tmpdir:
             files = [Path(tmpdir) / f"subset_{i}" for i in range(len(subsets))]
-            with ProcessPoolExecutor() as executor:
+            with ProcessPoolExecutor(2) as executor:
                 for subset, file in zip(subsets, files):
                     executor.submit(
                         self.export_subset,
