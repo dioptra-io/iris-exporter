@@ -4,12 +4,7 @@ from iris_client import IrisClient
 
 from iris_exporter.commons.logger import logger
 from iris_exporter.commons.settings import Settings
-from iris_exporter.exporter.actors import (
-    export_graph,
-    export_results,
-    export_traceroutes_atlas,
-    export_traceroutes_warts,
-)
+from iris_exporter.exporter.actors import export_results
 
 settings = Settings()
 
@@ -58,25 +53,25 @@ def watch_once() -> None:
                     measurement_uuid,
                     agent_uuid,
                 )
-                export_traceroutes_atlas.send(
-                    database_credentials,
-                    storage_credentials,
-                    settings.s3_bucket,
-                    measurement_uuid,
-                    agent_uuid,
-                )
-                export_traceroutes_warts.send(
-                    database_credentials,
-                    storage_credentials,
-                    settings.s3_bucket,
-                    measurement_uuid,
-                    agent_uuid,
-                )
-                export_graph.send(
-                    database_credentials,
-                    storage_credentials,
-                    settings.s3_bucket,
-                    measurement_uuid,
-                    agent_uuid,
-                )
+                # export_traceroutes_atlas.send(
+                #     database_credentials,
+                #     storage_credentials,
+                #     settings.s3_bucket,
+                #     measurement_uuid,
+                #     agent_uuid,
+                # )
+                # export_traceroutes_warts.send(
+                #     database_credentials,
+                #     storage_credentials,
+                #     settings.s3_bucket,
+                #     measurement_uuid,
+                #     agent_uuid,
+                # )
+                # export_graph.send(
+                #     database_credentials,
+                #     storage_credentials,
+                #     settings.s3_bucket,
+                #     measurement_uuid,
+                #     agent_uuid,
+                # )
         logger.info("state=done")
