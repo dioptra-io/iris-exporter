@@ -7,7 +7,7 @@ aws() {
 }
 
 clickhouse() {
-    clickhouse-client \
+    command clickhouse client \
         --max_memory_usage=16Gi \
         --optimize_aggregation_in_order=1 \
         --database="${CLICKHOUSE_DATABASE}" \
@@ -84,7 +84,7 @@ if [ $# -ne 2 ]; then
 fi
 
 require aws
-require clickhouse-client
+require clickhouse
 require iris-to-atlas
 require iris-to-warts-trace
 require pv

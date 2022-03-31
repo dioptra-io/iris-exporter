@@ -1,53 +1,5 @@
 # iris-exporter
 
-🚧 Work in progress.
-
-```bash
-# TODO: Create sample measurement + create bucket
-mc alias set docker http://minio.docker.localhost minioadmin minioadmin
-mc mb docker/exporter
-mc ls docker/exporter
-export IRIS_BASE_URL=http://api.docker.localhost IRIS_USERNAME=admin@example.org IRIS_PASSWORD=admin
-docker compose --project-name=iris up
-docker compose up -d clickhouse minio redis
-poetry run python -m iris_exporter.watcher
-# TODO: Insert diamond-miner test data.
-```
-
-```sql
-GRANT SELECT on iris.* TO 'iris-exporter';
-GRANT S3 ON *.* TO 'iris-exporter';
-```
-
-```json
-{
-    "Version": "2012-10-17",
-    "Statement": [
-        {
-            "Effect": "Allow",
-            "Action": [
-                "s3:*"
-            ],
-            "Resource": [
-                "arn:aws:s3:::public-exports/*"
-            ]
-        }
-    ]
-}
-```
-
-## Installation
-
-### Docker 🐳
-
-```bash
-docker build -t iris-exporter .
-docker run iris-exporter --help
-```
-
-### Poetry 🐍
-
-```bash
-poetry install
-poetry run iris-exporter --help
-```
+Exporting Iris data to various formats is a data-intensive task that requires to fetch and transform 100GB+ of data per
+measurement. The majority of the work is done by the [iris-converters](https://github.com/dioptra-io/iris-converters).
+This repository contains scripts for orchestrating data extraction, transformation and load into S3.

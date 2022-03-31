@@ -1,4 +1,27 @@
-FROM python:3.10
+FROM docker.io/library/ubuntu:22.04
+ENV DEBIAN_FRONTEND=noninteractive
+
+RUN apt-get update \
+    && apt-get install --no-install-recommends --yes \
+        awscli \
+        build-essential \
+        curl \
+        pv \
+        python3-pip \
+        zstd \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs > rustup.sh \
+    && chmod +x rustup.sh \
+    && ./rustup.sh --default-toolchain nightly -y \
+    && ln -s /root/.cargo/bin/cargo /usr/bin/cargo \
+    && rm rustup.sh
+
+RUN curl -L https://github.com/dioptra-io/clickhouse-builds/releases/download/20211210/clickhouse.$(arch).zst | zstd > /usr/bin/clickhouse \
+     && chmod +x /usr/bin/clickhouse
+
+RUN cargo install iris-converters
+
 WORKDIR /usr/bin
 
 COPY requirements.txt requirements.txt
