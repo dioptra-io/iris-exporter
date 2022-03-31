@@ -1,11 +1,8 @@
 FROM python:3.10
-WORKDIR /app
+WORKDIR /usr/bin
 
-RUN pip install --no-cache-dir poetry
-RUN poetry config virtualenvs.create false
+COPY requirements.txt requirements.txt
+RUN pip install --no-cache-dir --requirement requirements.txt
 
-COPY pyproject.toml pyproject.toml
-COPY poetry.lock poetry.lock
-
-RUN poetry install --no-root --no-dev && rm -rf /root/.cache/*
-COPY iris_exporter iris_exporter
+COPY iris-exporter-list.py iris-exporter-list.py
+COPY iris-exporter-single.sh iris-exporter-single.sh

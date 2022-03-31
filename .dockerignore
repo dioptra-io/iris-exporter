@@ -1,4 +1,4 @@
 *
-!iris_exporter/
-!poetry.lock
-!pyproject.toml
+!iris-exporter-list.py
+!iris-exporter-single.sh
+!requirements.txt
