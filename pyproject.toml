@@ -16,7 +16,7 @@ httpx = "^0.22.0"
 orjson = "^3.6.7"
 pych-client = {extras = ["orjson"], version = "^0.2.9"}
 pydantic = "^1.9.0"
-redis = "^4.1.4"
+redis = "^4.2.1"
 zstandard = "^0.17.0"
 
 [tool.poetry.dev-dependencies]
