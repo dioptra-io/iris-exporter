@@ -808,8 +808,8 @@ python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*"
 
 [[package]]
 name = "pych-client"
-version = "0.2.8"
-description = ""
+version = "0.2.9"
+description = "A ClickHouse client for Python, with a command-line interface."
 category = "main"
 optional = false
 python-versions = ">=3.8,<4.0"
@@ -1128,7 +1128,7 @@ cffi = ["cffi (>=1.11)"]
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.10"
-content-hash = "db3b416303a4d4ca167561f6828464650a006901f12462708fcc3c4c413486a1"
+content-hash = "b2cfb5e2b4bc6eddbdeea582d1385e9104200b5fa1dbaa6dacf68b70740c191d"
 
 [metadata.files]
 anyio = [
@@ -1546,8 +1546,8 @@ py = [
     {file = "py-1.11.0.tar.gz", hash = "sha256:51c75c4126074b472f746a24399ad32f6053d1b34b68d2fa41e558e6f4a98719"},
 ]
 pych-client = [
-    {file = "pych-client-0.2.8.tar.gz", hash = "sha256:3f090c640e7b0ec40ad9f707a4fa9b26928fc3118c6ae6a7dfa910031342ea0b"},
-    {file = "pych_client-0.2.8-py3-none-any.whl", hash = "sha256:78a1d603d3a260131f9758d041a09820f163d3b2e7a73f336497208c2f37cf6d"},
+    {file = "pych-client-0.2.9.tar.gz", hash = "sha256:3dbce08fafa9af4eeb091b47283ff6e030cea1520ac0693ac43b3c8955c4d67b"},
+    {file = "pych_client-0.2.9-py3-none-any.whl", hash = "sha256:86f45f4d64259bbac0e6cee996a671141a6a9e65e7fa598beacbd3dd374e3770"},
 ]
 pycparser = [
     {file = "pycparser-2.21-py2.py3-none-any.whl", hash = "sha256:8ee45429555515e1f6b185e78100aea234072576aa43ab53aefcae078162fca9"},
