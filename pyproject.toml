@@ -8,7 +8,7 @@ license = "MIT"
 [tool.poetry.dependencies]
 python = "^3.10"
 boto3 = "^1.21.31"
-boto3-stubs = {extras = ["s3"], version = "^1.21.9"}
+boto3-stubs = {extras = ["s3"], version = "^1.21.31"}
 diamond-miner = "^0.8.0"
 dioptra-iris-client = "^0.4.2"
 dramatiq = {extras = ["redis", "watch"], version = "^1.12.2"}
