@@ -11,7 +11,7 @@ boto3 = "^1.21.31"
 boto3-stubs = {extras = ["s3"], version = "^1.21.31"}
 diamond-miner = "^0.9.1"
 dioptra-iris-client = "^0.4.3"
-dramatiq = {extras = ["redis", "watch"], version = "^1.12.2"}
+dramatiq = {extras = ["redis", "watch"], version = "^1.13.0"}
 httpx = "^0.22.0"
 orjson = "^3.6.8"
 pych-client = {extras = ["orjson"], version = "^0.2.9"}
