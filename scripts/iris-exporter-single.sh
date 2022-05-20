@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
-set -euo pipefail
-shopt -s nullglob globstar
+
+# shellcheck source=scripts/common.sh
+. "${BASH_SOURCE%/*}/common.sh"
 
 aws() {
     command aws --endpoint-url="${AWS_S3_ENDPOINT_URL}" "$@"
@@ -82,13 +83,6 @@ if [ $# -ne 2 ]; then
     echo "$0 MEASUREMENT_UUID AGENT_UUID"
     exit 1
 fi
-
-require aws
-require clickhouse
-require iris-to-atlas
-require iris-to-warts-trace
-require pv
-require zstd
 
 query=$(traceroutes_query "$1" "$2")
 total=$(clickhouse "$(count_query "$1" "$2")")

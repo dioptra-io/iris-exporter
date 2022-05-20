@@ -1,16 +1,10 @@
 name: Docker
-
-on:
-  push:
-    paths-ignore: [ '**.md' ]
-  pull_request:
-    paths-ignore: [ '**.md' ]
-
+on: [push]
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - uses: dioptra-io/publish-docker-action@v1.3
+      - uses: dioptra-io/publish-docker-action@v1.4
         with:
           password: ${{ secrets.GITHUB_TOKEN }}
