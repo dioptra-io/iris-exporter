@@ -1,5 +1,6 @@
 FROM docker.io/library/ubuntu:22.04
 ENV DEBIAN_FRONTEND=noninteractive
+ENV PATH="/root/.cargo/bin:$PATH"
 
 RUN apt-get update \
     && apt-get install --no-install-recommends --yes \
@@ -12,9 +13,7 @@ RUN apt-get update \
     && rm -rf /var/lib/apt/lists/*
 
 RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs > rustup.sh \
-    && chmod +x rustup.sh \
-    && ./rustup.sh --default-toolchain nightly -y \
-    && ln -s /root/.cargo/bin/cargo /usr/bin/cargo \
+    && bash rustup.sh --default-toolchain nightly -y \
     && rm rustup.sh
 
 RUN curl -L https://github.com/dioptra-io/clickhouse-builds/releases/download/20211210/clickhouse.$(arch).zst | zstd > /usr/bin/clickhouse \

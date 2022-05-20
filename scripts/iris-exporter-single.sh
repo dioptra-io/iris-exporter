@@ -8,13 +8,13 @@ aws() {
 
 clickhouse() {
     command clickhouse client \
-        --max_memory_usage=16Gi \
-        --optimize_aggregation_in_order=1 \
-        --database="${CLICKHOUSE_DATABASE}" \
-        --host="${CLICKHOUSE_HOST}" \
-        --user="${CLICKHOUSE_USERNAME}" \
-        --password="${CLICKHOUSE_PASSWORD}" \
-        --query="${1}"
+        --optimize_aggregation_in_order 1 \
+        --max_memory_usage "${CLICKHOUSE_MAX_MEMORY_USAGE:-16Gi}" \
+        --database "${CLICKHOUSE_DATABASE:-default}" \
+        --host "${CLICKHOUSE_HOST:-localhost}" \
+        --user "${CLICKHOUSE_USERNAME:-default}" \
+        --password "${CLICKHOUSE_PASSWORD:-}" \
+        --query "${1}"
 }
 
 pv() {
