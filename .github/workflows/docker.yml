@@ -1,10 +1,6 @@
 name: Docker
 
-on:
-  push:
-    paths-ignore: [ '**.md' ]
-  pull_request:
-    paths-ignore: [ '**.md' ]
+on: push
 
 jobs:
   build:
@@ -14,3 +10,4 @@ jobs:
       - uses: dioptra-io/publish-docker-action@v1
         with:
           password: ${{ secrets.GITHUB_TOKEN }}
+          push: ${{ github.actor != 'dependabot[bot]' }}
