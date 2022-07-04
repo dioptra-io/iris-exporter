@@ -520,7 +520,7 @@ dev = ["tox", "bump2version (<1)", "sphinx (<2)", "importlib-metadata (<3)", "im
 
 [[package]]
 name = "diamond-miner"
-version = "0.10.0"
+version = "0.10.1"
 description = "High-speed, Internet-scale, load-balanced paths discovery."
 category = "main"
 optional = false
@@ -529,7 +529,7 @@ python-versions = ">=3.10,<4.0"
 [package.dependencies]
 pych-client = ">=0.2.3,<0.3.0"
 pygfc = ">=1.0.5,<2.0.0"
-zstandard = ">=0.15.2,<0.18.0"
+zstandard = ">=0.15.2,<0.19.0"
 
 [[package]]
 name = "dioptra-iris-client"
@@ -1146,7 +1146,7 @@ cffi = ["cffi (>=1.11)"]
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.10"
-content-hash = "f00c9217fde0071ecf7d79a86c23cbd944a34ae2726e88a85c8fc24d829602ea"
+content-hash = "17b298331acdb23ea631a82e13810c9e1385137cf6f123c9f420defa6c5f1b90"
 
 [metadata.files]
 anyio = [
@@ -1323,10 +1323,10 @@ deprecated = [
     {file = "Deprecated-1.2.13.tar.gz", hash = "sha256:43ac5335da90c31c24ba028af536a91d41d53f9e6901ddb021bcc572ce44e38d"},
 ]
 diamond-miner = [
-    {file = "diamond-miner-0.10.0.tar.gz", hash = "sha256:66f5fb4882264c5fbbc04620a85a984a34eeed87835ff6708e8f43c2993ee011"},
-    {file = "diamond_miner-0.10.0-cp310-cp310-macosx_11_0_x86_64.whl", hash = "sha256:7547c11953eacdfeb467066dd84c81dba92c26eccbe4238aab8216153ea545a5"},
-    {file = "diamond_miner-0.10.0-cp310-cp310-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:c05490ffe84610e41c961225c34c96b452dec36f5931cdf9278bee6adaf28365"},
-    {file = "diamond_miner-0.10.0-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:7aa4ad0dbbe726d55682b59c5325789911a4baa2f1ece387c1c5da16fb5270cf"},
+    {file = "diamond-miner-0.10.1.tar.gz", hash = "sha256:ce4664416cd9743909c5a3cf52b9f6a6faf5ef790c6a41cc1fa981d9527c51aa"},
+    {file = "diamond_miner-0.10.1-cp310-cp310-macosx_11_0_x86_64.whl", hash = "sha256:8fa4ba1f06910c859c28eba59e9355fa89d21478e156d0936d857527a02f0441"},
+    {file = "diamond_miner-0.10.1-cp310-cp310-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:7a18e006fd4aa19177f25103b538064001d8d75facf1525681606ec79c7fb394"},
+    {file = "diamond_miner-0.10.1-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:dad6bc832612d53e6b172f0d97cdfbd2380b22bd7067e3d392e230085faec0e2"},
 ]
 dioptra-iris-client = [
     {file = "dioptra-iris-client-0.4.4.tar.gz", hash = "sha256:6422aabb11d4ca3fff1a7a7ffa6fc08cb9017fb2540003e36180d5973df234e2"},
