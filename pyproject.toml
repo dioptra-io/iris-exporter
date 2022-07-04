@@ -13,7 +13,7 @@ diamond-miner = "^0.10.0"
 dioptra-iris-client = "^0.4.4"
 dramatiq = {extras = ["redis", "watch"], version = "^1.13.0"}
 httpx = "^0.22.0"
-orjson = "^3.6.9"
+orjson = "^3.7.6"
 pych-client = {extras = ["orjson"], version = "^0.2.12"}
 pydantic = "^1.9.1"
 redis = "^4.3.4"
