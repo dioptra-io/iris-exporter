@@ -20,7 +20,7 @@ redis = "^4.3.4"
 zstandard = "^0.17.0"
 
 [tool.poetry.dev-dependencies]
-mypy = "^0.961"
+mypy = "^0.971"
 pre-commit = "^2.19.0"
 pytest = "^7.1.2"
 pytest-asyncio = "^0.18.3"
