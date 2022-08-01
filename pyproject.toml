@@ -17,7 +17,7 @@ orjson = "^3.7.6"
 pych-client = {extras = ["orjson"], version = "^0.2.12"}
 pydantic = "^1.9.1"
 redis = "^4.3.4"
-zstandard = "^0.17.0"
+zstandard = "^0.18.0"
 
 [tool.poetry.dev-dependencies]
 mypy = "^0.961"
