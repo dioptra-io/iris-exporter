@@ -1,5 +1,7 @@
 # iris-exporter
 
+[![Docker](https://img.shields.io/github/workflow/status/dioptra-io/iris-exporter/Docker?logo=github)](https://github.com/dioptra-io/iris-exporter/actions/workflows/docker.yml)
+
 ## Design
 
 Exporting Iris data to various formats is a data-intensive task that requires to fetch and transform 100GB+ of data per measurement.
