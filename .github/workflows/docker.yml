@@ -8,3 +8,4 @@ jobs:
       - uses: dioptra-io/publish-docker-action@v1
         with:
           password: ${{ secrets.GITHUB_TOKEN }}
+          push: ${{ github.actor != 'dependabot[bot]' }}
