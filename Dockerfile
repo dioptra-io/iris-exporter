@@ -19,7 +19,7 @@ RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs > rustup.sh \
 RUN curl -L https://github.com/dioptra-io/clickhouse-builds/releases/download/20211210/clickhouse.$(arch).zst | zstd > /usr/bin/clickhouse \
      && chmod +x /usr/bin/clickhouse
 
-RUN cargo install iris-converters
+RUN cargo install pantrace
 
 WORKDIR /usr/bin
 
