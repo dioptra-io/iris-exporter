@@ -23,10 +23,9 @@ RUN cargo install pantrace
 COPY --from=clickhouse/clickhouse-server:22 /bin/clickhouse /bin/clickhouse
 
 # Install the scripts
-WORKDIR /usr/bin
+WORKDIR /app
 
 COPY requirements.txt requirements.txt
 RUN pip install --no-cache-dir --requirement requirements.txt
 
-COPY scripts/iris-exporter-list.py iris-exporter-list.py
-COPY scripts/iris-exporter-single.sh iris-exporter-single.sh
+COPY scripts scripts
