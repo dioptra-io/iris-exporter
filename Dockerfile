@@ -1,4 +1,5 @@
-FROM docker.io/library/ubuntu:22.04
+FROM ubuntu:22.04
+
 ENV DEBIAN_FRONTEND=noninteractive
 ENV PATH="/root/.cargo/bin:$PATH"
 
@@ -12,15 +13,16 @@ RUN apt-get update \
         zstd \
     && rm -rf /var/lib/apt/lists/*
 
+# Install pantrace
 RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs > rustup.sh \
     && bash rustup.sh --default-toolchain nightly -y \
     && rm rustup.sh
-
-RUN curl -L https://github.com/dioptra-io/clickhouse-builds/releases/download/20211210/clickhouse.$(arch).zst | zstd > /usr/bin/clickhouse \
-     && chmod +x /usr/bin/clickhouse
-
 RUN cargo install pantrace
 
+# Install ClickHouse client
+COPY --from=clickhouse/clickhouse-server:22 /bin/clickhouse /bin/clickhouse
+
+# Install the scripts
 WORKDIR /usr/bin
 
 COPY requirements.txt requirements.txt
