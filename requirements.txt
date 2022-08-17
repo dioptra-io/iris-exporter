@@ -1,0 +1,1 @@
+dioptra-iris-client==0.4.2
