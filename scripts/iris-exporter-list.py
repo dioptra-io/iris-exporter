@@ -9,7 +9,7 @@ def main():
     parser.add_argument("--tag", required=True)
     args = parser.parse_args()
     with IrisClient() as client:
-        measurements = client.all_iter(
+        measurements = client.all(
             "/measurements/",
             params=dict(only_mine=False, state="finished", tag=args.tag),
         )
