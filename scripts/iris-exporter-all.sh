@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
-set -euo pipefail
-shopt -s nullglob globstar
+
+# shellcheck source=scripts/common.sh
+. "${BASH_SOURCE%/*}/common.sh"
 
 if [ $# -ne 1 ]; then
     echo "$0 LISTFILE"
@@ -10,8 +11,8 @@ fi
 parallel \
   --arg-file="$1" \
   --colsep=' ' \
-  --jobs=1 \
+  --jobs=8 \
   --memfree=1G \
+  --progress \
   --retries=1 \
-  --verbose \
-  scripts/iris-exporter-single.sh "{1}" "{2}"
+  scripts/iris-exporter-raw.sh "{1}" "{2}"

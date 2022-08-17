@@ -1,7 +1,6 @@
 # iris-exporter
 
 TODO: Queue with GNU parallel (+maxmem option).
-TODO: Remove "exported" tag.
 
 ## Usage
 
