@@ -73,12 +73,6 @@ b1bd513f-1825-4d02-8807-a6c1f1ea0ddf fda938ce-bed2-4fbf-979a-d5d5cf609034
 scripts/iris-exporter-list.py --tag visibility:public > measurements.txt
 ```
 
-### Health check
-
-```bash
-scripts/iris-exporter-test.sh
-```
-
 ## Tests
 
 ```bash

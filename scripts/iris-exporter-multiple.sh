@@ -8,9 +8,6 @@ if [ $# -ne 1 ]; then
     exit 1
 fi
 
-test_clickhouse
-test_s3
-
 parallel \
   --arg-file="$1" \
   --colsep=' ' \

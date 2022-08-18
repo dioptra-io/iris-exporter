@@ -16,13 +16,17 @@ shopt -s nullglob globstar
 export AWS_ACCESS_KEY_ID=${S3_ACCESS_KEY_ID}
 export AWS_SECRET_ACCESS_KEY=${S3_SECRET_ACCESS_KEY}
 
-aws() {
-  command aws --endpoint-url="${S3_ENDPOINT_URL}" "$@"
+require() {
+  hash "$@" || exit 127
 }
 
-aws_does_not_exists() {
-  aws s3 ls "$1" >/dev/null && exit 1 || exit 0
-}
+# Check that the required programs are installed.
+# This must be performed before defining functions with the same name.
+require aws
+require clickhouse
+require pantrace
+require pv
+require zstd
 
 clickhouse() {
   command clickhouse client \
@@ -40,24 +44,18 @@ pv() {
   command pv --line-mode --size="$1"
 }
 
-require() {
-  hash "$@" || exit 127
+s3() {
+  aws --endpoint-url="${S3_ENDPOINT_URL}" s3 "$@"
+}
+
+s3_does_not_exists() {
+  s3 ls "$1" >/dev/null && exit 1 || exit 0
 }
 
 zstd() {
   command zstd -1
 }
 
-test_clickhouse() {
-  clickhouse "SELECT 'ClickHouse: OK'"
-}
-
-test_s3() {
-  aws s3 ls "${S3_BUCKET}" >/dev/null && echo "S3: OK"
-}
-
-require aws
-require clickhouse
-require pantrace
-require pv
-require zstd
+# Perform some basic tests
+clickhouse "SELECT 'ClickHouse: OK'"
+s3 ls "${S3_BUCKET}" >/dev/null && echo "S3: OK"

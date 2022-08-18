@@ -61,9 +61,6 @@ if [ $# -ne 2 ]; then
   exit 1
 fi
 
-test_clickhouse
-test_s3
-
 measurement_uuid=$1
 agent_uuid=$2
 
@@ -73,9 +70,9 @@ total=$(clickhouse "$(count_query "${measurement_uuid}" "${agent_uuid}")")
 # TODO: warts -> warts-trace in pantrace
 for format in atlas warts; do
   url="s3://${S3_BUCKET}/${measurement_uuid}__${agent_uuid}__${format}.jsonl.zst"
-  if $(aws_does_not_exists "${url}"); then
+  if $(s3_does_not_exists "${url}"); then
     echo "Exporting: ${url}"
-    clickhouse "${query}" | pv "${total}" | pantrace --from iris --to ${format} | zstd | aws s3 cp - "${url}" || aws s3 rm "${url}"
+    clickhouse "${query}" | pv "${total}" | pantrace --from iris --to ${format} | zstd | s3 cp - "${url}" || s3 rm "${url}"
   else
     echo "Already existing: ${url}"
   fi
