@@ -13,14 +13,11 @@ RUN apt-get update \
         zstd \
     && rm -rf /var/lib/apt/lists/*
 
-# Install pantrace
-RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs > rustup.sh \
-    && bash rustup.sh --default-toolchain nightly -y \
-    && rm rustup.sh
-RUN cargo install pantrace
-
 # Install ClickHouse client
 COPY --from=clickhouse/clickhouse-server:22 /bin/clickhouse /bin/clickhouse
+
+# Install pantrace
+COPY --from=ghcr.io/dioptra-io/pantrace:main /usr/local/bin/pantrace /bin/pantrace
 
 # Install the scripts
 WORKDIR /app
