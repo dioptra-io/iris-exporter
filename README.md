@@ -84,4 +84,5 @@ scripts/iris-exporter-test.sh
 ```bash
 # In iris repo
 docker compose up -d
+docker compose exec api .venv/bin/alembic upgrade head
 ```

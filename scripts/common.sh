@@ -26,18 +26,18 @@ aws_does_not_exists() {
 
 clickhouse() {
   command clickhouse client \
-    --optimize_aggregation_in_order 1 \
-    --max_memory_usage "${CLICKHOUSE_MAX_MEMORY_USAGE}" \
-    --max_threads 1 \
     --database "${CLICKHOUSE_DATABASE}" \
     --host "${CLICKHOUSE_HOST}" \
     --user "${CLICKHOUSE_USERNAME}" \
     --password "${CLICKHOUSE_PASSWORD}" \
+    --max_memory_usage "${CLICKHOUSE_MAX_MEMORY_USAGE}" \
+    --max_threads 1 \
+    --optimize_aggregation_in_order 1 \
     --query "${1}"
 }
 
 pv() {
-  command pv --line-mode --size="$1" --name="$2"
+  command pv --line-mode --size="$1"
 }
 
 require() {
@@ -58,5 +58,6 @@ test_s3() {
 
 require aws
 require clickhouse
+require pantrace
 require pv
 require zstd
