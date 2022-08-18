@@ -22,11 +22,6 @@ repos:
       - id: flake8
         args: [ "--ignore=E501" ]
 
-#  - repo: https://github.com/gruntwork-io/pre-commit
-#    rev: v0.1.17
-#    hooks:
-#      - id: shellcheck
-
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v4.1.0
     hooks:

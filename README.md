@@ -24,22 +24,24 @@ docker run ghcr.io/dioptra-io/iris-exporter:main scripts/...
 
 ## Configuration
 
-The scripts require the following environment variables:
+The scripts require the following environment variables.
+The default values are set to match the local development environment of Iris.
+Note that the native interface of ClickHouse on port 9000 is used, and not the HTTP interface on port 8123.
 
-Name                          | Default
-------------------------------|--------
-`AWS_S3_ENDPOINT_URL`         | -
-`AWS_S3_BUCKET`               | -
-`CLICKHOUSE_MAX_MEMORY_USAGE` | `16Gi`
-`CLICKHOUSE_DATABASE`         | `default`
-`CLICKHOUSE_HOST`             | `localhost`
-`CLICKHOUSE_USERNAME`         | `default`
-`CLICKHOUSE_PASSWORD`         | -
-`IRIS_BASE_URL`               | -
-`IRIS_USERNAME`               | -
-`IRIS_PASSWORD`               | -
-
-Note that the scripts use the native interface of ClickHouse on port 9000, and not the HTTP interface on port 8123.
+| Name                          | Default                         |
+|-------------------------------|---------------------------------|
+| `CLICKHOUSE_HOST`             | `clickhouse.docker.localhost`   |
+| `CLICKHOUSE_DATABASE`         | `iris`                          |
+| `CLICKHOUSE_USERNAME`         | `iris`                          |
+| `CLICKHOUSE_PASSWORD`         | `iris`                          |
+| `CLICKHOUSE_MAX_MEMORY_USAGE` | `16Gi`                          |
+| `IRIS_BASE_URL`               | `http://api.docker.localhost`   |
+| `IRIS_USERNAME`               | `admin@example.org`             |
+| `IRIS_PASSWORD`               | `admin`                         |
+| `S3_ACCESS_KEY_ID`            | `minioadmin`                    |
+| `S3_SECRET_ACCESS_KEY`        | `minioadmin`                    |
+| `S3_BUCKET`                   | `public-exports`                |
+| `S3_ENDPOINT_URL`             | `http://minio.docker.localhost` |
 
 ## Usage
 
@@ -53,8 +55,8 @@ scripts/iris-exporter-single.sh b1bd513f-1825-4d02-8807-a6c1f1ea0ddf 0d96a984-08
 ### Exporting multiple measurements in parallel
 
 ```bash
-# scripts/iris-exporter-all.sh LISTFILE
-scripts/iris-exporter-all.sh measurements.txt
+# scripts/iris-exporter-multiple.sh LISTFILE
+scripts/iris-exporter-multiple.sh measurements.txt
 ```
 
 where `measurements.txt` is a list of measurement and agent UUIDs:
@@ -69,4 +71,17 @@ b1bd513f-1825-4d02-8807-a6c1f1ea0ddf fda938ce-bed2-4fbf-979a-d5d5cf609034
 ```bash
 # scripts/iris-exporter-list.py --tag TAG
 scripts/iris-exporter-list.py --tag visibility:public > measurements.txt
+```
+
+### Health check
+
+```bash
+scripts/iris-exporter-test.sh
+```
+
+## Tests
+
+```bash
+# In iris repo
+docker compose up -d
 ```

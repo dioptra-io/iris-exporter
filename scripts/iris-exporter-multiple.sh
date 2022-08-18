@@ -8,6 +8,9 @@ if [ $# -ne 1 ]; then
     exit 1
 fi
 
+test_clickhouse
+test_s3
+
 parallel \
   --arg-file="$1" \
   --colsep=' ' \
@@ -15,4 +18,4 @@ parallel \
   --memfree=1G \
   --progress \
   --retries=1 \
-  scripts/iris-exporter-raw.sh "{1}" "{2}"
+  scripts/iris-exporter-single.sh "{1}" "{2}"
