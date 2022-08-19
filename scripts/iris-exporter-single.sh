@@ -14,7 +14,6 @@ count_query() {
         probe_dst_port,
     ))
     FROM results__${measurement_id}
-    WHERE round = 1
 EOF
 }
 
@@ -37,9 +36,7 @@ traceroutes_query() {
             rtt
         )) AS replies
     FROM results__${measurement_id}
-    -- WHERE {self.filters(subset)}
-    WHERE round = 1
-        AND NOT destination_host_reply
+    WHERE NOT destination_host_reply
         AND NOT destination_prefix_reply
         AND NOT private_probe_dst_prefix
         AND NOT private_reply_src_addr
@@ -67,13 +64,10 @@ agent_uuid=$2
 query=$(traceroutes_query "${measurement_uuid}" "${agent_uuid}")
 total=$(clickhouse "$(count_query "${measurement_uuid}" "${agent_uuid}")")
 
-# TODO: warts -> warts-trace in pantrace
-for format in atlas warts; do
-  url="s3://${S3_BUCKET}/${measurement_uuid}__${agent_uuid}__${format}.jsonl.zst"
-  if $(s3_does_not_exists "${url}"); then
-    echo "Exporting: ${url}"
-    clickhouse "${query}" | pv "${total}" | pantrace --from iris --to ${format} | zstd | s3 cp - "${url}" || s3 rm "${url}"
-  else
-    echo "Already existing: ${url}"
-  fi
-done
+url="s3://${S3_BUCKET}/${measurement_uuid}__${agent_uuid}__jsonl.jsonl.zst"
+if $(s3_does_not_exists "${url}"); then
+  echo "Exporting: ${url}"
+  clickhouse "${query}" | pv "${total}" | zstd | s3 cp - "${url}" || s3 rm "${url}"
+else
+  echo "Already existing: ${url}"
+fi

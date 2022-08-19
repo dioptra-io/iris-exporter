@@ -24,7 +24,6 @@ require() {
 # This must be performed before defining functions with the same name.
 require aws
 require clickhouse
-require pantrace
 require pv
 require zstd
 
