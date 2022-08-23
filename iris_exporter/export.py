@@ -1,8 +1,9 @@
+import re
+
 from diamond_miner.queries import results_table
 from pych_client import AsyncClickHouseClient
 
-from iris_exporter.exceptions import ExportException
-from iris_exporter.helpers import measurement_id, object_key, query_id
+from iris_exporter.helpers import has_column, measurement_id, object_key, query_id
 
 
 async def export(
@@ -59,22 +60,24 @@ async def export(
         probe_dst_port
     )
     """
-    try:
-        await clickhouse.execute(
-            query,
-            params={
-                "measurement_uuid": measurement_uuid,
-                "agent_uuid": agent_uuid,
-                "table": results_table(measurement_id(measurement_uuid, agent_uuid)),
-                "s3_path": f"{s3_base_url}/{s3_bucket}/{object_key(measurement_uuid, agent_uuid)}",
-                "s3_access_key_id": s3_access_key_id,
-                "s3_secret_access_key": s3_secret_access_key,
-            },
-            settings={
-                "optimize_aggregation_in_order": 1,
-                "query_id": query_id(measurement_uuid, agent_uuid),
-                "s3_truncate_on_insert": 1,
-            },
-        )
-    except Exception as e:
-        raise ExportException(measurement_uuid, agent_uuid) from e
+    table = results_table(measurement_id(measurement_uuid, agent_uuid))
+    if not await has_column(clickhouse, table, "capture_timestamp"):
+        # Handle old tables without the capture_timestamp column.
+        query = re.sub(r"formatDateTime\(.+\)", "'1970-01-01T00:00:00Z'", query)
+    await clickhouse.execute(
+        query,
+        params={
+            "measurement_uuid": measurement_uuid,
+            "agent_uuid": agent_uuid,
+            "table": table,
+            "s3_path": f"{s3_base_url}/{s3_bucket}/{object_key(measurement_uuid, agent_uuid)}",
+            "s3_access_key_id": s3_access_key_id,
+            "s3_secret_access_key": s3_secret_access_key,
+        },
+        settings={
+            "max_threads": 16,
+            "optimize_aggregation_in_order": 1,
+            "query_id": query_id(measurement_uuid, agent_uuid),
+            "s3_truncate_on_insert": 1,
+        },
+    )

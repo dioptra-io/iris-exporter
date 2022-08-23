@@ -9,9 +9,8 @@ from pych_client import AsyncClickHouseClient
 from types_aiobotocore_s3 import S3ServiceResource
 from types_aiobotocore_s3.service_resource import Bucket
 
-from iris_exporter.exceptions import ExportException
 from iris_exporter.export import export
-from iris_exporter.helpers import delete_object, object_exists, query_running
+from iris_exporter.helpers import delete_object, object_exists, query_is_running
 from iris_exporter.logging import logger
 
 app = typer.Typer()
@@ -156,11 +155,13 @@ async def run_exporter(
         },
     )
     semaphore = Semaphore(concurrency)
-    futures = []
+    tasks = {}
     logger.info("tag=%s action=list", tag)
     for measurement in measurements:
         for agent in measurement["agents"]:
-            futures.append(
+            measurement_uuid = measurement["uuid"]
+            agent_uuid = agent["agent_uuid"]
+            tasks[(measurement_uuid, agent_uuid)] = asyncio.create_task(
                 process(
                     bucket=bucket,
                     clickhouse=clickhouse,
@@ -171,22 +172,31 @@ async def run_exporter(
                     s3_secret_access_key=s3_secret_access_key,
                     dry_run=dry_run,
                     overwrite=overwrite,
-                    measurement_uuid=measurement["uuid"],
-                    agent_uuid=agent["agent_uuid"],
+                    measurement_uuid=measurement_uuid,
+                    agent_uuid=agent_uuid,
                 )
             )
-    for future in asyncio.as_completed(futures):
-        try:
-            await future
-        except ExportException as e:
-            logger.exception(
-                "measurement_uuid=%s agent_uuid=%s",
-                e.measurement_uuid,
-                e.agent_uuid,
-            )
-            await delete_object(bucket, e.measurement_uuid, e.agent_uuid)
-        except Exception:
-            logger.exception("measurement_uuid=unknown agent_uuid=unknown")
+    while True:
+        success, failed, remaining = 0, 0, 0
+        for (measurement_uuid, agent_uuid), task in tasks.items():
+            if task.done():
+                if e := task.exception():
+                    logger.exception(
+                        "measurement_uuid=%s agent_uuid=%s",
+                        measurement_uuid,
+                        agent_uuid,
+                        exc_info=e,
+                    )
+                    await delete_object(bucket, measurement_uuid, agent_uuid)
+                    failed += 1
+                else:
+                    success += 1
+            else:
+                remaining += 1
+        logger.info("success=%s failed=%s remaining=%s", success, failed, remaining)
+        if remaining == 0:
+            break
+        await asyncio.sleep(1)
 
 
 async def process(
@@ -211,7 +221,7 @@ async def process(
                 agent_uuid,
             )
             return
-        if await query_running(clickhouse, measurement_uuid, agent_uuid):
+        if await query_is_running(clickhouse, measurement_uuid, agent_uuid):
             logger.info(
                 "measurement_uuid=%s agent_uuid=%s action=skip-running-query",
                 measurement_uuid,
