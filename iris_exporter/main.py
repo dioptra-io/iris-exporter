@@ -184,6 +184,8 @@ async def run_exporter(
                 e.agent_uuid,
             )
             await delete_object(bucket, e.measurement_uuid, e.agent_uuid)
+        except Exception:
+            logger.exception("measurement_uuid=unknown agent_uuid=unknown")
 
 
 async def process(
