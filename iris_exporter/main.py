@@ -1,11 +1,13 @@
 import asyncio
 import logging
+from asyncio import Semaphore
 
 import aioboto3
 import typer
 from iris_client import AsyncIrisClient
 from pych_client import AsyncClickHouseClient
 from types_aiobotocore_s3 import S3ServiceResource
+from types_aiobotocore_s3.service_resource import Bucket
 
 from iris_exporter.exceptions import ExportException
 from iris_exporter.export import export
@@ -21,6 +23,11 @@ def main(
         ...,
         help="Tag to export",
     ),
+    concurrency: int = typer.Option(
+        4,
+        metavar="N",
+        help="Maximum number of concurrent exports.",
+    ),
     dry_run: bool = typer.Option(
         False,
         help="Do not actually export measurements.",
@@ -35,7 +42,9 @@ def main(
         metavar="URL",
     ),
     clickhouse_database: str = typer.Option(
-        "iris", help="ClickHouse database", metavar="DATABASE"
+        "iris",
+        help="ClickHouse database",
+        metavar="DATABASE",
     ),
     clickhouse_username: str = typer.Option(
         "iris",
@@ -113,6 +122,7 @@ def main(
                 s3_bucket=s3_bucket,
                 s3_access_key_id=s3_access_key_id,
                 s3_secret_access_key=s3_secret_access_key,
+                concurrency=concurrency,
                 dry_run=dry_run,
                 overwrite=overwrite,
                 tag=tag,
@@ -130,6 +140,7 @@ async def run_exporter(
     s3_bucket: str,
     s3_access_key_id: str,
     s3_secret_access_key: str,
+    concurrency: int,
     dry_run: bool,
     overwrite: bool,
     tag: str,
@@ -144,46 +155,25 @@ async def run_exporter(
             "tag": tag,
         },
     )
+    semaphore = Semaphore(concurrency)
     futures = []
     for measurement in measurements:
         for agent in measurement["agents"]:
-            measurement_uuid = measurement["uuid"]
-            agent_uuid = agent["agent_uuid"]
-            if not overwrite and await object_exists(
-                bucket, measurement_uuid, agent_uuid
-            ):
-                logger.info(
-                    "measurement_uuid=%s agent_uuid=%s action=skip-existing-object",
-                    measurement_uuid,
-                    agent_uuid,
+            futures.append(
+                process(
+                    bucket=bucket,
+                    clickhouse=clickhouse,
+                    semaphore=semaphore,
+                    s3_base_url=s3_base_url,
+                    s3_bucket=s3_bucket,
+                    s3_access_key_id=s3_access_key_id,
+                    s3_secret_access_key=s3_secret_access_key,
+                    dry_run=dry_run,
+                    overwrite=overwrite,
+                    measurement_uuid=measurement["uuid"],
+                    agent_uuid=agent["agent_uuid"],
                 )
-                continue
-            if await query_running(clickhouse, measurement_uuid, agent_uuid):
-                logger.info(
-                    "measurement_uuid=%s agent_uuid=%s action=skip-running-query",
-                    measurement_uuid,
-                    agent_uuid,
-                )
-                continue
-            logger.info(
-                "measurement_uuid=%s agent_uuid=%s action=export",
-                measurement_uuid,
-                agent_uuid,
             )
-            if not dry_run:
-                futures.append(
-                    asyncio.create_task(
-                        export(
-                            clickhouse,
-                            s3_base_url,
-                            s3_bucket,
-                            s3_access_key_id,
-                            s3_secret_access_key,
-                            measurement_uuid,
-                            agent_uuid,
-                        )
-                    )
-                )
     for future in asyncio.as_completed(futures):
         try:
             await future
@@ -193,10 +183,55 @@ async def run_exporter(
                 e.measurement_uuid,
                 e.agent_uuid,
             )
+            await delete_object(bucket, e.measurement_uuid, e.agent_uuid)
+
+
+async def process(
+    *,
+    bucket: Bucket,
+    clickhouse: AsyncClickHouseClient,
+    semaphore: Semaphore,
+    s3_base_url: str,
+    s3_bucket: str,
+    s3_access_key_id: str,
+    s3_secret_access_key: str,
+    dry_run: bool,
+    overwrite: bool,
+    measurement_uuid: str,
+    agent_uuid: str,
+) -> None:
+    async with semaphore:
+        if not overwrite and await object_exists(bucket, measurement_uuid, agent_uuid):
             logger.info(
-                "measurement_uuid=%s agent_uuid=%s action=cleanup",
-                e.measurement_uuid,
-                e.agent_uuid,
+                "measurement_uuid=%s agent_uuid=%s action=skip-existing-object",
+                measurement_uuid,
+                agent_uuid,
             )
-            if await object_exists(bucket, e.measurement_uuid, e.agent_uuid):
-                await delete_object(bucket, e.measurement_uuid, e.agent_uuid)
+            return
+        if await query_running(clickhouse, measurement_uuid, agent_uuid):
+            logger.info(
+                "measurement_uuid=%s agent_uuid=%s action=skip-running-query",
+                measurement_uuid,
+                agent_uuid,
+            )
+            return
+        if not dry_run:
+            logger.info(
+                "measurement_uuid=%s agent_uuid=%s action=export",
+                measurement_uuid,
+                agent_uuid,
+            )
+            await export(
+                clickhouse=clickhouse,
+                s3_base_url=s3_base_url,
+                s3_bucket=s3_bucket,
+                s3_access_key_id=s3_access_key_id,
+                s3_secret_access_key=s3_secret_access_key,
+                measurement_uuid=measurement_uuid,
+                agent_uuid=agent_uuid,
+            )
+            logger.info(
+                "measurement_uuid=%s agent_uuid=%s action=export-done",
+                measurement_uuid,
+                agent_uuid,
+            )

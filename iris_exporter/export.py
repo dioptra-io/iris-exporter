@@ -6,6 +6,7 @@ from iris_exporter.helpers import measurement_id, object_key, query_id
 
 
 async def export(
+    *,
     clickhouse: AsyncClickHouseClient,
     s3_base_url: str,
     s3_bucket: str,

@@ -24,8 +24,12 @@ async def object_exists(bucket: Bucket, measurement_uuid: str, agent_uuid: str) 
 
 
 async def delete_object(bucket: Bucket, measurement_uuid: str, agent_uuid: str) -> None:
-    obj = await bucket.Object(object_key(measurement_uuid, agent_uuid))
-    await obj.delete()
+    try:
+        obj = await bucket.Object(object_key(measurement_uuid, agent_uuid))
+        await obj.delete()
+    except ClientError as e:
+        if e.response["Error"]["Code"] != "404":
+            raise
 
 
 def query_id(measurement_uuid: str, agent_uuid: str) -> str:
@@ -44,5 +48,5 @@ async def query_running(
     rows = await clickhouse.json(
         query, {"query_id": query_id(measurement_uuid, agent_uuid)}
     )
-    # A query is currently running if it's only entry in the query log is "QueryStart".
+    # A query is currently running if its only entry in the query log is "QueryStart".
     return rows is not None and rows[0]["types"] == ["QueryStart"]  # type: ignore
