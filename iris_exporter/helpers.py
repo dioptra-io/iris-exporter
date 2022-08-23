@@ -40,16 +40,14 @@ async def query_is_running(
     clickhouse: AsyncClickHouseClient, measurement_uuid: str, agent_uuid: str
 ) -> bool:
     query = """
-    SELECT groupArray(type) AS types
-    FROM system.query_log
+    SELECT 1
+    FROM system.processes
     WHERE query_id = {query_id:String}
-    GROUP BY query_id
     """
     rows = await clickhouse.json(
         query, {"query_id": query_id(measurement_uuid, agent_uuid)}
     )
-    # A query is currently running if its only entry in the query log is "QueryStart".
-    return len(rows) > 0 and rows[0]["types"] == ["QueryStart"]
+    return len(rows) > 0
 
 
 async def has_column(
@@ -58,7 +56,7 @@ async def has_column(
     column: str,
 ) -> bool:
     query = """
-    SELECT name
+    SELECT 1
     FROM system.columns
     WHERE name = {column:String} AND table = {table:String}
     """
