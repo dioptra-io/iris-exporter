@@ -157,6 +157,7 @@ async def run_exporter(
     )
     semaphore = Semaphore(concurrency)
     futures = []
+    logger.info("tag=%s action=list", tag)
     for measurement in measurements:
         for agent in measurement["agents"]:
             futures.append(
