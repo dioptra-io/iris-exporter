@@ -1,6 +1,6 @@
 import asyncio
 import logging
-from asyncio import Semaphore
+from asyncio import Semaphore, as_completed
 
 import aioboto3
 import typer
@@ -155,13 +155,13 @@ async def run_exporter(
         },
     )
     semaphore = Semaphore(concurrency)
-    tasks = {}
+    futures = []
     logger.info("tag=%s action=list", tag)
     for measurement in measurements:
         for agent in measurement["agents"]:
             measurement_uuid = measurement["uuid"]
             agent_uuid = agent["agent_uuid"]
-            tasks[(measurement_uuid, agent_uuid)] = asyncio.create_task(
+            futures.append(
                 process(
                     bucket=bucket,
                     clickhouse=clickhouse,
@@ -176,27 +176,16 @@ async def run_exporter(
                     agent_uuid=agent_uuid,
                 )
             )
-    while True:
-        success, failed, remaining = 0, 0, 0
-        for (measurement_uuid, agent_uuid), task in tasks.items():
-            if task.done():
-                if e := task.exception():
-                    logger.exception(
-                        "measurement_uuid=%s agent_uuid=%s",
-                        measurement_uuid,
-                        agent_uuid,
-                        exc_info=e,
-                    )
-                    await delete_object(bucket, measurement_uuid, agent_uuid)
-                    failed += 1
-                else:
-                    success += 1
-            else:
-                remaining += 1
+    success, failed, remaining = 0, 0, len(futures)
+    for future in as_completed(futures):
+        remaining -= 1
+        try:
+            await future
+            success += 1
+        except Exception:
+            logger.exception("exception while running export task")
+            failed += 1
         logger.info("success=%s failed=%s remaining=%s", success, failed, remaining)
-        if remaining == 0:
-            break
-        await asyncio.sleep(1)
 
 
 async def process(
@@ -234,17 +223,26 @@ async def process(
                 measurement_uuid,
                 agent_uuid,
             )
-            await export(
-                clickhouse=clickhouse,
-                s3_base_url=s3_base_url,
-                s3_bucket=s3_bucket,
-                s3_access_key_id=s3_access_key_id,
-                s3_secret_access_key=s3_secret_access_key,
-                measurement_uuid=measurement_uuid,
-                agent_uuid=agent_uuid,
-            )
+            try:
+                await export(
+                    clickhouse=clickhouse,
+                    s3_base_url=s3_base_url,
+                    s3_bucket=s3_bucket,
+                    s3_access_key_id=s3_access_key_id,
+                    s3_secret_access_key=s3_secret_access_key,
+                    measurement_uuid=measurement_uuid,
+                    agent_uuid=agent_uuid,
+                )
+            except Exception:
+                logger.error(
+                    "measurement_uuid=%s agent_uuid=%s action=export-failure",
+                    measurement_uuid,
+                    agent_uuid,
+                )
+                await delete_object(bucket, measurement_uuid, agent_uuid)
+                raise
             logger.info(
-                "measurement_uuid=%s agent_uuid=%s action=export-done",
+                "measurement_uuid=%s agent_uuid=%s action=export-success",
                 measurement_uuid,
                 agent_uuid,
             )

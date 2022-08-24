@@ -21,10 +21,13 @@ The default settings of the exporter match the default settings of Iris.
 As such, no particular configuration is required to run the exporter against a local instance of Iris.
 
 ```bash
-# Ensure that the `public-exports` bucket exists.
 # In the iris repository:
 docker compose up -d
 docker compose exec api .venv/bin/alembic upgrade head
+# Ensure that the `public-exports` bucket exists:
+# https://docs.min.io/docs/minio-client-quickstart-guide.html
+mc alias set docker http://minio.docker.localhost minioadmin minioadmin
+mc mb docker/public-exports
 # In the iris-exporter repository:
 python -m iris_exporter TAG
 ```
